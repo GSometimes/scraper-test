@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-async function getIngredients(url) {
+export async function getIngredients(url) {
   let res = await axios.get(url);
 
   const $ = cheerio.load(res.data);
@@ -35,21 +35,9 @@ async function getIngredients(url) {
     // console.log('directions', $(el).text());
   });
 
-  console.log(recipe);
+  return recipe;
 }
 
 getIngredients(
   'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/'
 );
-
-// Ben Suggestion
-// let recipe = {
-//   //consider adding this
-//   //works only if url ENDS WITH / also. As shown in example
-//   //splits on /, slices the second to last out, replaces - with space
-//   //given url below, it would return 'air fryer potato wedges'
-//   name: url.split('/').slice(-2, -1)[0].replace(/-/g, ' '),
-//   image: '',
-//   ingredients: [],
-//   directions: {},
-// };
