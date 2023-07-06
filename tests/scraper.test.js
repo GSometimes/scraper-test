@@ -1,4 +1,5 @@
 // Vitest
+// Leaving test commented out to avoid site being blocked by allrecipes.com
 // import { it, expect } from 'vitest';
 // import { getIngredients } from './scraper.js';
 
@@ -41,48 +42,53 @@
 // });
 
 // Jest
+// const { getIngredients } = require('./scraper.js');
+// const nock = require('nock');
+// Leaving test commented out to avoid site being blocked by allrecipes.com
+
+// test('should return the an object with the name, image, ingredients, and directions', async () => {
+//   // Arrange
+//   const url =
+//     'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/';
+
+//   // Act
+//   const result = await getIngredients(url);
+
+//   // Assert
+//   expect(result).toEqual({
+//     name: 'air fryer potato wedges',
+//     image:
+//       'https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fpublic-assets.meredithcorp.io%2F81577bd180cdb3fd9b75781bf27d2284%2F1682387844413IMG_6442-2-.JPG&q=60&c=sc&orient=true&w=160&poi=auto&h=90',
+//     ingredients: [
+//       '2 medium russet potatoes',
+//       '1 ½ tablespoons olive oil',
+//       '½ teaspoon ground paprika',
+//       '½ teaspoon parsley flakes',
+//       '½ teaspoon chili powder',
+//       '½ teaspoon sea salt',
+//       '⅛ teaspoon ground black pepper',
+//     ],
+//     directions: {
+//       'Step 1': 'Preheat an air fryer to 400 degrees F (200 degrees C).',
+//       'Step 2':
+//         'Cut each potato in half lengthwise. Cut each half in half lengthwise, and then cut each quarter in half lengthwise. You will have 16 wedges. Gather the seasonings.',
+//       'Step 3':
+//         'Place potato wedges in a large bowl. Add olive oil, paprika, parsley, chili, salt, and pepper; mix until well combined.',
+//       'Step 4':
+//         'Place 1/2 of the potato wedges in the basket of the air fryer and cook for 10 minutes.',
+//       'Step 5':
+//         'Flip wedges with tongs and cook for an additional 5 minutes. Remove to a plate.',
+//       'Step 6': 'Repeat to cook the remaining wedges.',
+//       'Step 7': 'Serve hot and enjoy!',
+//     },
+//   });
+// });
+
+// Jest with nock and HTML Response
+// Jest dependencies
 const { getIngredients } = require('./scraper.js');
 const nock = require('nock');
 
-test('should return the an object with the name, image, ingredients, and directions', async () => {
-  // Arrange
-  const url =
-    'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/';
-
-  // Act
-  const result = await getIngredients(url);
-
-  // Assert
-  expect(result).toEqual({
-    name: 'air fryer potato wedges',
-    image:
-      'https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fpublic-assets.meredithcorp.io%2F81577bd180cdb3fd9b75781bf27d2284%2F1682387844413IMG_6442-2-.JPG&q=60&c=sc&orient=true&w=160&poi=auto&h=90',
-    ingredients: [
-      '2 medium russet potatoes',
-      '1 ½ tablespoons olive oil',
-      '½ teaspoon ground paprika',
-      '½ teaspoon parsley flakes',
-      '½ teaspoon chili powder',
-      '½ teaspoon sea salt',
-      '⅛ teaspoon ground black pepper',
-    ],
-    directions: {
-      'Step 1': 'Preheat an air fryer to 400 degrees F (200 degrees C).',
-      'Step 2':
-        'Cut each potato in half lengthwise. Cut each half in half lengthwise, and then cut each quarter in half lengthwise. You will have 16 wedges. Gather the seasonings.',
-      'Step 3':
-        'Place potato wedges in a large bowl. Add olive oil, paprika, parsley, chili, salt, and pepper; mix until well combined.',
-      'Step 4':
-        'Place 1/2 of the potato wedges in the basket of the air fryer and cook for 10 minutes.',
-      'Step 5':
-        'Flip wedges with tongs and cook for an additional 5 minutes. Remove to a plate.',
-      'Step 6': 'Repeat to cook the remaining wedges.',
-      'Step 7': 'Serve hot and enjoy!',
-    },
-  });
-});
-
-// Jest with nock and HTML Response
 test('should return the an object with the name, image, ingredients, and directions', async () => {
   // Arrange
   const url =
@@ -96,6 +102,7 @@ test('should return the an object with the name, image, ingredients, and directi
       `
     <html>
     <body>
+        <h1 class="headline heading-content">Air Fryer Potato Wedges</h1>
         <div class="universal-image__image" data-src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fpublic-assets.meredithcorp.io%2F81577bd180cdb3fd9b75781bf27d2284%2F1682387844413IMG_6442-2-.JPG&q=60&c=sc&orient=true&w=160&poi=auto&h=90"></div>
         <ul>
             <li class="mntl-structured-ingredients__list-item">2 medium russet potatoes</li>
@@ -155,10 +162,56 @@ test('should return the an object with the name, image, ingredients, and directi
   });
 });
 
-// test('value of name should be a type of string', async () => {
-//   // Arrange
-//   const url = 'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/';
+// Jest with nock testing to see if the name is a string
+it('should return name as type string', async () => {
+  // Arrange
+  const url =
+    'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/';
 
-//   // Act
-//   // Assert
-// })
+  // setup nock to intercept HTTP request and return a mock response
+  nock('http://www.allrecipes.com')
+    .get('/recipe/266826/air-fryer-potato-wedges/')
+    .reply(
+      200,
+      `
+    <html>
+    <body>
+        <h1 class="headline heading-content">Air Fryer Potato Wedges</h1>
+    </body>
+    </html>
+  `
+    );
+
+  // Act
+  const result = await getIngredients(url);
+
+  // Assert
+  expect(typeof result.name).toBe('string');
+});
+
+// Jest with nock testing to see if the image is a string
+it('should return image as type string', async () => {
+  // Arrange
+  const url =
+    'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/';
+
+  // setup nock to intercept HTTP request and return a mock response
+  nock('http://www.allrecipes.com')
+    .get('/recipe/266826/air-fryer-potato-wedges/')
+    .reply(
+      200,
+      `
+      <html>
+      <body>
+          <div class="universal-image__image" data-src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fpublic-assets.meredithcorp.io%2F81577bd180cdb3fd9b75781bf27d2284%2F1682387844413IMG_6442-2-.JPG&q=60&c=sc&orient=true&w=160&poi=auto&h=90"></div>
+      </body>
+      </html>
+      `
+    );
+
+  // Act
+  const result = await getIngredients(url);
+
+  // Assert
+  expect(typeof result.image).toBe('string');
+});
