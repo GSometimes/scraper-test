@@ -42,10 +42,13 @@ const cheerio = require('cheerio');
 //   'http://www.allrecipes.com/recipe/266826/air-fryer-potato-wedges/'
 // );
 
-
 // I'm a potato and thought that converting this to an arrow function would some how make it work. I was wrong.
 // I needed to change export { getIngredients } to module.exports = { getIngredients };
 // That was all. I'm a potato.
+
+// import axios from 'axios';
+// import cheerio from 'cheerio';
+
 const getIngredients = async (url) => {
   let res = await axios.get(url);
 
